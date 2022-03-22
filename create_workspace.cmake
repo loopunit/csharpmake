@@ -10,16 +10,21 @@ function(install_sharpmake_workspace ARG_WORKSPACE_DIR ARG_WORKING_DIR)
 	#message(STATUS "	-S ${sharpmake_CURRENT_PATH}")
 	#message(STATUS "	-B ${ARG_WORKING_DIR}")
 
+	if(NOT EXISTS ${ARG_WORKING_DIR})
+		file(MAKE_DIRECTORY ${ARG_WORKING_DIR})
+	endif()
+
 	set(ARG_BUILD_TYPE Release)
 	execute_process(
-		COMMAND ${CMAKE_COMMAND}
+		COMMAND "${CMAKE_COMMAND}"
 			-Dsharpmake_WORKSPACE_DIR:PATH=${ARG_WORKSPACE_DIR}
 			-Dsharpmake_SOURCE_DIR:PATH=${ARG_WORKSPACE_DIR}/Sharpmake
 			-Dsharpmake_INSTALL_DIR:PATH=${ARG_WORKSPACE_DIR}
 			-G Ninja
 			-S ${sharpmake_CURRENT_PATH}
 			-B ${ARG_WORKING_DIR}
-		WORKING_DIRECTORY ${ARG_WORKING_DIR})
+		WORKING_DIRECTORY ${ARG_WORKING_DIR}
+		COMMAND_ERROR_IS_FATAL ANY)
 
 	#message(STATUS "COMMAND ${CMAKE_COMMAND}")
 	#message(STATUS "	--build ${ARG_WORKING_DIR}")
@@ -27,9 +32,10 @@ function(install_sharpmake_workspace ARG_WORKSPACE_DIR ARG_WORKING_DIR)
 	#message(STATUS "	--config ${ARG_BUILD_TYPE}")
 
 	execute_process(
-		COMMAND ${CMAKE_COMMAND} 
+		COMMAND "${CMAKE_COMMAND}"
 			--build ${ARG_WORKING_DIR}
 			--target install 
 			--config ${ARG_BUILD_TYPE}
-		WORKING_DIRECTORY ${ARG_WORKING_DIR})
+		WORKING_DIRECTORY ${ARG_WORKING_DIR}
+		COMMAND_ERROR_IS_FATAL ANY)
 endfunction()
