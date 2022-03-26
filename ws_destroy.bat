@@ -1,3 +1,3 @@
-rm -rf Sharpmake
-rm -rf bin
+REM rm -rf Sharpmake
+REM rm -rf bin
 rm -rf python_env
