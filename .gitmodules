@@ -5,3 +5,6 @@
 	path = vcpkg-tool
 	url = https://github.com/microsoft/vcpkg-tool.git
 	branch = 2022-03-30
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/microsoft/vcpkg.git
