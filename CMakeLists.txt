@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 project(csharpmake)
 
+if(NOT DEFINED CSHARPMAKE_WORKSPACE_ROOT)
+	message(FATAL_ERROR "CSHARPMAKE_WORKSPACE_ROOT must be defined")
+endif()
+
 # Very simple dependency check - just compare the git hashes.
 # Developing sharpmake or vcpkg is not a supported workflow, so this should suffice for now.
 execute_process(
@@ -80,4 +84,27 @@ if(needs_rebuild)
 	file(REMOVE_RECURSE ${CMAKE_INSTALL_PREFIX}/.git)
 	file(REMOVE_RECURSE ${CMAKE_INSTALL_PREFIX}/.github)
 	file(COPY ${CMAKE_CURRENT_BINARY_DIR}/git-state.txt DESTINATION ${CMAKE_INSTALL_PREFIX})
+endif()
+
+#file(COPY 
+#		${CMAKE_CURRENT_LIST_DIR}/ws_activate.bat
+#		${CMAKE_CURRENT_LIST_DIR}/ws_deactivate.bat
+#		${CMAKE_CURRENT_LIST_DIR}/ws_devenv.bat
+#		${CMAKE_CURRENT_LIST_DIR}/ws_sharpmake.bat
+#		${CMAKE_CURRENT_LIST_DIR}/ws_generate_sharpmake.bat
+#		${CMAKE_CURRENT_LIST_DIR}/ws_devenv_workspace.bat
+#		${CMAKE_CURRENT_LIST_DIR}/ws_devenv_sharpmake.bat
+#		${CMAKE_CURRENT_LIST_DIR}/ws_destroy.bat
+#	DESTINATION ${CSHARPMAKE_WORKSPACE_ROOT})
+
+if(NOT EXISTS ${CSHARPMAKE_WORKSPACE_ROOT}/common.sharpmake.cs)
+	file(COPY 
+			${CMAKE_CURRENT_LIST_DIR}/common.sharpmake.cs
+		DESTINATION ${CSHARPMAKE_WORKSPACE_ROOT})
+endif()
+
+if(NOT EXISTS ${CSHARPMAKE_WORKSPACE_ROOT}/workspace.sharpmake.cs)
+	file(COPY 
+			${CMAKE_CURRENT_LIST_DIR}/workspace.sharpmake.cs
+		DESTINATION ${CSHARPMAKE_WORKSPACE_ROOT})
 endif()
