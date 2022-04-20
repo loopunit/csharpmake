@@ -36,7 +36,7 @@ set_target_properties(ws_cleanup PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
 #
 
-if (EXISTS vcpkgs_list)
+if (DEFINED vcpkgs_list)
 	#--overlay-ports="${CMAKE_CURRENT_SOURCE_DIR}/out/overlay_ports"
 	#--x-asset-sources="${CMAKE_CURRENT_SOURCE_DIR}/out/asset_sources"
 	#--overlay-ports="${CMAKE_CURRENT_SOURCE_DIR}/out/overlay_ports"
