@@ -1,10 +1,11 @@
 using Sharpmake;
 
 [module: Sharpmake.Include("common.sharpmake.cs")]
+[module: Sharpmake.Include("vcpkg_dependencies.sharpmake.cs")]
 //[module: Sharpmake.Include("organization/project/project.sharpmake.cs")]
 
 [Generate]
-public class sharpmake_workspace_solution : lu.common_Solution
+public class sharpmake_workspace_solution : lu.common_solution
 {
     public sharpmake_workspace_solution()
     {

@@ -44,8 +44,8 @@ namespace lu
     {
 		// Paths have to be constructed relative to the sharpmake exe, which we will assume is installed in the workspace root in bin/Sharpmake
         public string ExecutablePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-        public string WorkspaceBinRoot = "[project.ExecutablePath]/../";
-        public string WorkspaceRoot = "[project.ExecutablePath]/../../";
+        public string WorkspaceBinRoot = "[project.ExecutablePath]/";
+        public string WorkspaceRoot = "[project.ExecutablePath]/../";
         public string GeneratedRoot = "[project.WorkspaceRoot]/out/sharpmake.generated";
         public string BuildRoot = "[project.GeneratedRoot]";
 
@@ -81,8 +81,8 @@ namespace lu
     {
 		// Paths have to be constructed relative to the sharpmake exe, which we will assume is installed in the workspace root in bin/Sharpmake
         public string ExecutablePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-        public string WorkspaceBinRoot = "[solution.ExecutablePath]/../";
-        public string WorkspaceRoot = "[solution.ExecutablePath]/../../";
+        public string WorkspaceBinRoot = "[solution.ExecutablePath]/";
+        public string WorkspaceRoot = "[solution.ExecutablePath]/../";
         public string GeneratedRoot = "[solution.WorkspaceRoot]";
 
         public base_solution() : base(typeof(Target))
