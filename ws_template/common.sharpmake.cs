@@ -1,7 +1,7 @@
 using Sharpmake;
 using System;
 
-[module: Sharpmake.Include("csharpmakepkg/base.sharpmake.cs")]
+[module: Sharpmake.Include("csharpmake/base.sharpmake.cs")]
 
 // User-overrideable
 namespace lu

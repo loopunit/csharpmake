@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
-project(csharpmakepkg)
+project(csharpmake)
 
 # Very simple dependency check - just compare the git hashes.
 # Developing sharpmake or vcpkg is not a supported workflow, so this should suffice for now.
