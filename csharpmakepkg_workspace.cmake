@@ -1,3 +1,5 @@
+include(FetchContent)
+
 execute_process(
 	COMMAND ${CMAKE_COMMAND}
 		-DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_SOURCE_DIR}/bin
@@ -6,6 +8,36 @@ execute_process(
 		-S "${CMAKE_CURRENT_SOURCE_DIR}/csharpmakepkg"
 		-B "${CMAKE_CURRENT_BINARY_DIR}/csharpmakepkg")
 
+#
+
+FetchContent_Declare(
+	emsdk
+	GIT_REPOSITORY https://github.com/emscripten-core/emsdk.git
+	GIT_TAG e34773a0d1a2f32dd3ba90d408a30fae89aa3c5a
+	GIT_SHALLOW TRUE
+	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk)
+
+FetchContent_GetProperties(emsdk)
+if(NOT emsdk_POPULATED)
+	FetchContent_Populate(emsdk)
+
+	execute_process(
+		COMMAND emsdk.bat install 3.1.9
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk)
+
+	execute_process(
+		COMMAND emsdk.bat activate 3.1.9
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk)
+endif()
+
+#EMSDK = ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk
+#EM_CONFIG = ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk/.emscripten
+#EMSDK_NODE = ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk/node/14.18.2_64bit/bin/node.exe
+#EMSDK_PYTHON = ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk/python/3.9.2-nuget_64bit/python.exe
+#JAVA_HOME = ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk/java/8.152_64bit
+#PATH += ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk
+#PATH += ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk/node/14.18.2_64bit/bin
+#PATH += ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk/upstream/emscripten
 #
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/common.sharpmake.cs)
@@ -47,7 +79,7 @@ if (DEFINED vcpkgs_list)
 	add_custom_target(install_vcpkg
 		${CMAKE_CURRENT_SOURCE_DIR}/bin/vcpkg.exe 
 			install 
-			--triplet=x64-windows 
+			--triplet=x64-windows-static
 			--x-buildtrees-root="${CMAKE_CURRENT_SOURCE_DIR}/out/buildtrees_root"
 			--x-install-root="${CMAKE_CURRENT_SOURCE_DIR}/out/install_root"
 			--downloads-root="${CMAKE_CURRENT_SOURCE_DIR}/out/downloads_root"
@@ -62,7 +94,7 @@ if (DEFINED vcpkgs_list)
 	add_custom_target(export_vcpkg
 		${CMAKE_CURRENT_SOURCE_DIR}/bin/vcpkg.exe 
 			export 
-			--triplet=x64-windows 
+			--triplet=x64-windows-static
 			${vcpkgs_list}
 			--x-buildtrees-root="${CMAKE_CURRENT_SOURCE_DIR}/out/buildtrees_root"
 			--x-install-root="${CMAKE_CURRENT_SOURCE_DIR}/out/install_root"
@@ -73,6 +105,8 @@ if (DEFINED vcpkgs_list)
 			--output="exported"
 		WORKING_DIRECTORY 
 			${CMAKE_CURRENT_SOURCE_DIR}
+		DEPENDS 
+			install_vcpkg
 		USES_TERMINAL) # remove if seeing the output is unnecessary
 		
 	set(VCPKG_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/out/exported/scripts/buildsystems/vcpkg.cmake)

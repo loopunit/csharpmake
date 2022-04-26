@@ -63,8 +63,8 @@ namespace lu
                 Optimization.Debug | Optimization.Release /*| Optimization.Retail*/)); // TODO: get targets from the user side
         }
 
-        [Configure()]
-        public virtual void ConfigureAll(Configuration conf, Target target)
+        [Configure(), ConfigurePriority(1)]
+        public virtual void ConfigureAll(Project.Configuration conf, Target target)
         {
             conf.Name = "[target.Optimization]_[target.Platform]";
             conf.ProjectFileName = "[project.Name]_[target.DevEnv]_[target.Platform]";
@@ -73,6 +73,16 @@ namespace lu
             conf.TargetLibraryPath = "[project.BuildRoot]/[target.Platform]/[target.Optimization]/lib/[project.Name]";
             conf.TargetPath = "[project.BuildRoot]/[target.Platform]/[target.Optimization]/bin/[project.Name]";
             conf.Options.Add(Options.Vc.Linker.TreatLinkerWarningAsErrors.Enable);
+        }
+
+        [Configure(Optimization.Debug), ConfigurePriority(2)]
+        public virtual void ConfigureDebug(Project.Configuration conf, Target target)
+        {
+        }
+
+        [Configure(Optimization.Release), ConfigurePriority(3)]
+        public virtual void ConfigureRelease(Project.Configuration conf, Target target)
+        {
         }
     }
 
