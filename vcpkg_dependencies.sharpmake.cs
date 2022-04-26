@@ -12,7 +12,7 @@ namespace lu
 		public string ExecutablePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 		public string WorkspaceBinRoot = "[project.ExecutablePath]/";
 		public string WorkspaceRoot = "[project.ExecutablePath]/../";
-		public string GeneratedRoot = "[project.WorkspaceRoot]/out/sharpmake.generated";
+		public string GeneratedRoot = "[project.WorkspaceRoot]/pkg/sharpmake.generated";
 		public string BuildRoot = "[project.GeneratedRoot]";
 
 		public export_project() : base(typeof(Target))

@@ -69,10 +69,10 @@ set_target_properties(ws_cleanup PROPERTIES EXCLUDE_FROM_ALL TRUE)
 #
 
 if (DEFINED vcpkgs_list)
-	#--overlay-ports="${CMAKE_CURRENT_SOURCE_DIR}/out/overlay_ports"
-	#--x-asset-sources="${CMAKE_CURRENT_SOURCE_DIR}/out/asset_sources"
-	#--overlay-ports="${CMAKE_CURRENT_SOURCE_DIR}/out/overlay_ports"
-	#--overlay-triplets="${CMAKE_CURRENT_SOURCE_DIR}/out/overlay_triplets"
+	#--overlay-ports="${CMAKE_CURRENT_SOURCE_DIR}/pkg/overlay_ports"
+	#--x-asset-sources="${CMAKE_CURRENT_SOURCE_DIR}/pkg/asset_sources"
+	#--overlay-ports="${CMAKE_CURRENT_SOURCE_DIR}/pkg/overlay_ports"
+	#--overlay-triplets="${CMAKE_CURRENT_SOURCE_DIR}/pkg/overlay_triplets"
 	#--no-downloads 
 	#--clean-after-build 
 	#--vcpkg-root="${CMAKE_CURRENT_SOURCE_DIR}/bin"
@@ -80,10 +80,10 @@ if (DEFINED vcpkgs_list)
 		${CMAKE_CURRENT_SOURCE_DIR}/bin/vcpkg.exe 
 			install 
 			--triplet=x64-windows-static
-			--x-buildtrees-root="${CMAKE_CURRENT_SOURCE_DIR}/out/buildtrees_root"
-			--x-install-root="${CMAKE_CURRENT_SOURCE_DIR}/out/install_root"
-			--downloads-root="${CMAKE_CURRENT_SOURCE_DIR}/out/downloads_root"
-			--x-packages-root="${CMAKE_CURRENT_SOURCE_DIR}/out/packages-root"
+			--x-buildtrees-root="${CMAKE_CURRENT_SOURCE_DIR}/pkg/buildtrees_root"
+			--x-install-root="${CMAKE_CURRENT_SOURCE_DIR}/pkg/install_root"
+			--downloads-root="${CMAKE_CURRENT_SOURCE_DIR}/pkg/downloads_root"
+			--x-packages-root="${CMAKE_CURRENT_SOURCE_DIR}/pkg/packages-root"
 			${vcpkgs_list} ${vcpkgs_features_list}
 		WORKING_DIRECTORY 
 			${CMAKE_CURRENT_SOURCE_DIR}
@@ -96,12 +96,12 @@ if (DEFINED vcpkgs_list)
 			export 
 			--triplet=x64-windows-static
 			${vcpkgs_list}
-			--x-buildtrees-root="${CMAKE_CURRENT_SOURCE_DIR}/out/buildtrees_root"
-			--x-install-root="${CMAKE_CURRENT_SOURCE_DIR}/out/install_root"
-			--downloads-root="${CMAKE_CURRENT_SOURCE_DIR}/out/downloads_root"
-			--x-packages-root="${CMAKE_CURRENT_SOURCE_DIR}/out/packages-root"
+			--x-buildtrees-root="${CMAKE_CURRENT_SOURCE_DIR}/pkg/buildtrees_root"
+			--x-install-root="${CMAKE_CURRENT_SOURCE_DIR}/pkg/install_root"
+			--downloads-root="${CMAKE_CURRENT_SOURCE_DIR}/pkg/downloads_root"
+			--x-packages-root="${CMAKE_CURRENT_SOURCE_DIR}/pkg/packages-root"
 			--raw 
-			--output-dir="${CMAKE_CURRENT_SOURCE_DIR}/out"
+			--output-dir="${CMAKE_CURRENT_SOURCE_DIR}/pkg"
 			--output="exported"
 		WORKING_DIRECTORY 
 			${CMAKE_CURRENT_SOURCE_DIR}
@@ -110,10 +110,10 @@ if (DEFINED vcpkgs_list)
 		USES_TERMINAL) # remove if seeing the output is unnecessary
 		
 	#set(VCPKG_OVERRIDE_FIND_PACKAGE_NAME vcpkg_find_package)
-	set(VCPKG_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/out/exported/scripts/buildsystems/vcpkg.cmake)
+	set(VCPKG_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/pkg/exported/scripts/buildsystems/vcpkg.cmake)
 
 	add_custom_target(generate_vcpkg
-		#copy "${CMAKE_CURRENT_SOURCE_DIR}/csharpmake/vcpkg_CMakeLists.txt" "${CMAKE_CURRENT_SOURCE_DIR}/out/exported/CMakeLists.txt"
+		#copy "${CMAKE_CURRENT_SOURCE_DIR}/csharpmake/vcpkg_CMakeLists.txt" "${CMAKE_CURRENT_SOURCE_DIR}/pkg/exported/CMakeLists.txt"
 		${CMAKE_COMMAND}
 			-DCMAKE_TOOLCHAIN_FILE:PATH=${VCPKG_TOOLCHAIN_FILE}
 			-DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_SOURCE_DIR}/bin
@@ -121,7 +121,7 @@ if (DEFINED vcpkgs_list)
 			-DVCPKG_TARGET_TRIPLET=x64-windows-static
 			-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 			-G Ninja
-			-S "${CMAKE_CURRENT_SOURCE_DIR}/out"
+			-S "${CMAKE_CURRENT_SOURCE_DIR}/pkg"
 			-B "${CMAKE_CURRENT_BINARY_DIR}/generated"
 		WORKING_DIRECTORY 
 			${CMAKE_CURRENT_SOURCE_DIR}
@@ -135,3 +135,32 @@ endif()
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_dependencies.sharpmake.cs)
 	file(COPY ${CMAKE_CURRENT_LIST_DIR}/ws_template/vcpkg_dependencies.sharpmake.cs DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
+
+#
+
+set(CPM_SOURCE_CACHE "${CMAKE_CURRENT_SOURCE_DIR}/pkg/.cpm/")
+set(CPM_DOWNLOAD_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/pkg/")
+
+#
+
+set(CPM_DOWNLOAD_VERSION 0.35.0)
+
+if(CPM_SOURCE_CACHE)
+  # Expand relative path. This is important if the provided path contains a tilde (~)
+  get_filename_component(CPM_SOURCE_CACHE ${CPM_SOURCE_CACHE} ABSOLUTE)
+  set(CPM_DOWNLOAD_LOCATION "${CPM_SOURCE_CACHE}/cpm/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
+elseif(DEFINED ENV{CPM_SOURCE_CACHE})
+  set(CPM_DOWNLOAD_LOCATION "$ENV{CPM_SOURCE_CACHE}/cpm/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
+else()
+  set(CPM_DOWNLOAD_LOCATION "${CMAKE_BINARY_DIR}/cmake/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
+endif()
+
+if(NOT (EXISTS ${CPM_DOWNLOAD_LOCATION}))
+  message(STATUS "Downloading CPM.cmake to ${CPM_DOWNLOAD_LOCATION}")
+  file(DOWNLOAD
+       https://github.com/cpm-cmake/CPM.cmake/releases/download/v${CPM_DOWNLOAD_VERSION}/CPM.cmake
+       ${CPM_DOWNLOAD_LOCATION}
+  )
+endif()
+
+include(${CPM_DOWNLOAD_LOCATION})
