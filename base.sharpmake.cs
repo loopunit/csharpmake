@@ -73,7 +73,9 @@ namespace lu
             conf.TargetLibraryPath = "[project.BuildRoot]/[target.Platform]/[target.Optimization]/lib/[project.Name]";
             conf.TargetPath = "[project.BuildRoot]/[target.Platform]/[target.Optimization]/bin/[project.Name]";
             conf.Options.Add(Options.Vc.Linker.TreatLinkerWarningAsErrors.Enable);
-        }
+        
+			conf.Options.Add(Options.Vc.Compiler.Exceptions.Enable);
+		}
 
         [Configure(Optimization.Debug), ConfigurePriority(2)]
         public virtual void ConfigureDebug(Project.Configuration conf, Target target)
