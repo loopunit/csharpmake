@@ -38,7 +38,6 @@ endif()
 #PATH += ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk
 #PATH += ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk/node/14.18.2_64bit/bin
 #PATH += ${CMAKE_CURRENT_SOURCE_DIR}/bin/emsdk/upstream/emscripten
-#
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/common.sharpmake.cs)
 	file(COPY ${CMAKE_CURRENT_LIST_DIR}/ws_template/common.sharpmake.cs DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
@@ -50,21 +49,21 @@ endif()
 
 #
 
-add_custom_target(ws_devenv_sharpmake csharpmake/ws_devenv_sharpmake.bat
+add_custom_target(open_sharpmake_in_devenv csharpmake/ws_devenv_sharpmake.bat
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(ws_devenv_sharpmake PROPERTIES EXCLUDE_FROM_ALL TRUE)
+set_target_properties(open_sharpmake_in_devenv PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-add_custom_target(ws_devenv_workspace csharpmake/ws_devenv_workspace.bat
+add_custom_target(open_workspace_in_devenv csharpmake/ws_devenv_workspace.bat
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(ws_devenv_workspace PROPERTIES EXCLUDE_FROM_ALL TRUE)
+set_target_properties(open_workspace_in_devenv PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-add_custom_target(ws_generate_sharpmake csharpmake/ws_generate_sharpmake.bat
+add_custom_target(generate_workspace_projects csharpmake/ws_generate_sharpmake.bat
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(ws_generate_sharpmake PROPERTIES EXCLUDE_FROM_ALL TRUE)
+set_target_properties(generate_workspace_projects PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-add_custom_target(ws_cleanup csharpmake/ws_cleanup.bat
+add_custom_target(cleanup_workspace csharpmake/ws_cleanup.bat
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(ws_cleanup PROPERTIES EXCLUDE_FROM_ALL TRUE)
+set_target_properties(cleanup_workspace PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
 #
 
@@ -89,7 +88,7 @@ if (DEFINED vcpkgs_list)
 			${CMAKE_CURRENT_SOURCE_DIR}
 		USES_TERMINAL) # remove if seeing the output is unnecessary
 
-	set_target_properties(ws_cleanup PROPERTIES EXCLUDE_FROM_ALL TRUE)
+	set_target_properties(install_vcpkg PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
 	add_custom_target(export_vcpkg
 		${CMAKE_CURRENT_SOURCE_DIR}/bin/vcpkg.exe 
@@ -108,26 +107,28 @@ if (DEFINED vcpkgs_list)
 		DEPENDS 
 			install_vcpkg
 		USES_TERMINAL) # remove if seeing the output is unnecessary
+
+	set_target_properties(export_vcpkg PROPERTIES EXCLUDE_FROM_ALL TRUE)
 		
 	#set(VCPKG_OVERRIDE_FIND_PACKAGE_NAME vcpkg_find_package)
-	set(VCPKG_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/pkg/exported/scripts/buildsystems/vcpkg.cmake)
+	#set(VCPKG_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/pkg/exported/scripts/buildsystems/vcpkg.cmake)
 
-	add_custom_target(generate_vcpkg
-		#copy "${CMAKE_CURRENT_SOURCE_DIR}/csharpmake/vcpkg_CMakeLists.txt" "${CMAKE_CURRENT_SOURCE_DIR}/pkg/exported/CMakeLists.txt"
-		${CMAKE_COMMAND}
-			-DCMAKE_TOOLCHAIN_FILE:PATH=${VCPKG_TOOLCHAIN_FILE}
-			-DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_SOURCE_DIR}/bin
-			-DSHARPMAKE_PROJECT_PREFIX:PATH=${CMAKE_CURRENT_SOURCE_DIR}
-			-DVCPKG_TARGET_TRIPLET=x64-windows-static
-			-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-			-G Ninja
-			-S "${CMAKE_CURRENT_SOURCE_DIR}/pkg"
-			-B "${CMAKE_CURRENT_BINARY_DIR}/generated"
-		WORKING_DIRECTORY 
-			${CMAKE_CURRENT_SOURCE_DIR}
-#		DEPENDS 
-#			export_vcpkg
-		USES_TERMINAL) # remove if seeing the output is unnecessary
+#	add_custom_target(generate_vcpkg
+#		#copy "${CMAKE_CURRENT_SOURCE_DIR}/csharpmake/vcpkg_CMakeLists.txt" "${CMAKE_CURRENT_SOURCE_DIR}/pkg/exported/CMakeLists.txt"
+#		${CMAKE_COMMAND}
+#			-DCMAKE_TOOLCHAIN_FILE:PATH=${VCPKG_TOOLCHAIN_FILE}
+#			-DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_SOURCE_DIR}/bin
+#			-DSHARPMAKE_PROJECT_PREFIX:PATH=${CMAKE_CURRENT_SOURCE_DIR}
+#			-DVCPKG_TARGET_TRIPLET=x64-windows-static
+#			-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+#			-G Ninja
+#			-S "${CMAKE_CURRENT_SOURCE_DIR}/pkg"
+#			-B "${CMAKE_CURRENT_BINARY_DIR}/generated"
+#		WORKING_DIRECTORY 
+#			${CMAKE_CURRENT_SOURCE_DIR}
+##		DEPENDS 
+##			export_vcpkg
+#		USES_TERMINAL) # remove if seeing the output is unnecessary
 		
 endif()
 

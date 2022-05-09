@@ -47,7 +47,7 @@ namespace lu
         public string WorkspaceBinRoot = "[project.ExecutablePath]/";
         public string WorkspaceRoot = "[project.ExecutablePath]/../";
         public string GeneratedRoot = "[project.WorkspaceRoot]/pkg/sharpmake.generated";
-        public string BuildRoot = "[project.GeneratedRoot]";
+        public string BuildRoot = "[project.WorkspaceRoot]/out";
 
         public base_project() : base(typeof(Target))
         {

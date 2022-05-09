@@ -13,7 +13,7 @@ namespace lu
 		public string WorkspaceBinRoot = "[project.ExecutablePath]/";
 		public string WorkspaceRoot = "[project.ExecutablePath]/../";
 		public string GeneratedRoot = "[project.WorkspaceRoot]/pkg/sharpmake.generated";
-		public string BuildRoot = "[project.GeneratedRoot]";
+		public string BuildRoot = "[project.WorkspaceRoot]/out";
 
 		public vcpkg_project() : base(typeof(Target))
 		{
@@ -32,20 +32,20 @@ namespace lu
 		public virtual void ConfigureRelease(Project.Configuration conf, Target target)
 		{
 			// Add root include path for vcpkg packages.
-			conf.IncludePaths.Add(@"[project.WorkspaceRoot]\pkg\exported\installed\x64-windows-static\include");
+			conf.IncludePaths.Add(@"[project.WorkspaceRoot]\pkg\install_root\x64-windows-static\include");
 
 			// Add root lib path for vcpkg packages.
-			conf.LibraryPaths.Add(@"[project.WorkspaceRoot]\pkg\exported\installed\x64-windows-static\lib");
+			conf.LibraryPaths.Add(@"[project.WorkspaceRoot]\pkg\install_root\x64-windows-static\lib");
 		}
 
 		[Configure(Optimization.Debug), ConfigurePriority(2)]
 		public virtual void ConfigureDebug(Project.Configuration conf, Target target)
 		{
 			// Add root include path for vcpkg packages.
-			conf.IncludePaths.Add(@"[project.WorkspaceRoot]\pkg\exported\installed\x64-windows-static\include");
+			conf.IncludePaths.Add(@"[project.WorkspaceRoot]\pkg\install_root\x64-windows-static\include");
 
 			// Add root lib path for vcpkg packages.
-			conf.LibraryPaths.Add(@"[project.WorkspaceRoot]\pkg\exported\installed\x64-windows-static\debug\lib");
+			conf.LibraryPaths.Add(@"[project.WorkspaceRoot]\pkg\install_root\x64-windows-static\debug\lib");
 		}
 	}
 }
