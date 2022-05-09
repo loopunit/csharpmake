@@ -3,7 +3,6 @@ using System;
 
 [module: Sharpmake.Include("base.sharpmake.cs")]
 
-// Generated
 namespace lu
 {
 	public class vcpkg_project : Project
